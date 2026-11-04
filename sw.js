@@ -1,9 +1,14 @@
-// নূর অ্যাপের অফলাইন ক্যাশ। অ্যাপে বড় পরিবর্তন করলে নিচের ভার্সন সংখ্যা বাড়িয়ে দিন (v1 -> v2)।
-const CACHE = 'noor-v1';
+// নূর অ্যাপের অফলাইন ক্যাশ। অ্যাপে বড় পরিবর্তন করলে নিচের ভার্সন সংখ্যা বাড়িয়ে দিন (v3 -> v4)।
+const CACHE = 'noor-v3';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const OPTIONAL = ['./adhan.mp3']; // ফাইল না থাকলেও ইনস্টল আটকাবে না
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.addAll(CORE).then(() => Promise.all(OPTIONAL.map(u => c.add(u).catch(() => {})))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {
@@ -14,6 +19,33 @@ self.addEventListener('activate', e => {
   );
 });
 
+// অডিও ফাইলে ফোন "Range" অনুরোধ পাঠায়, তাই ক্যাশ থেকেও আংশিক উত্তর দিতে হয়
+async function serveAudio(req) {
+  let hit = await caches.match(req.url);
+  if (!hit) {
+    const net = await fetch(req.url);
+    if (!net.ok) return net;
+    const c = await caches.open(CACHE);
+    await c.put(req.url, net.clone());
+    hit = net;
+  }
+  const range = req.headers.get('range');
+  if (!range) return hit;
+  const buf = await hit.arrayBuffer();
+  const m = /bytes=(\d*)-(\d*)/.exec(range);
+  const start = m && m[1] ? +m[1] : 0;
+  const end = m && m[2] ? Math.min(+m[2], buf.byteLength - 1) : buf.byteLength - 1;
+  return new Response(buf.slice(start, end + 1), {
+    status: 206,
+    statusText: 'Partial Content',
+    headers: {
+      'Content-Type': hit.headers.get('Content-Type') || 'audio/mpeg',
+      'Content-Range': `bytes ${start}-${end}/${buf.byteLength}`,
+      'Content-Length': String(end - start + 1)
+    }
+  });
+}
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -21,6 +53,12 @@ self.addEventListener('fetch', e => {
 
   // শহর খোঁজার API: ক্যাশ নয়, শুধু অনলাইনে কাজ করবে
   if (url.hostname.includes('nominatim.openstreetmap.org')) return;
+
+  // আযানের অডিও
+  if (url.origin === location.origin && /\.(mp3|ogg|m4a|wav)$/i.test(url.pathname)) {
+    e.respondWith(serveAudio(req).catch(() => Response.error()));
+    return;
+  }
 
   // পেজ: আগে নেটওয়ার্ক (নতুন ভার্সন পেতে), না পেলে ক্যাশ
   if (req.mode === 'navigate') {
@@ -32,7 +70,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // বাকি সব (ফন্ট, আইকন ইত্যাদি): আগে ক্যাশ, না থাকলে নেটওয়ার্ক থেকে এনে ক্যাশে রাখো
+  // বাকি সব (ফন্ট, ছবি ইত্যাদি): আগে ক্যাশ, না থাকলে নেটওয়ার্ক থেকে এনে ক্যাশে রাখো
   e.respondWith(
     caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res && (res.ok || res.type === 'opaque')) {
