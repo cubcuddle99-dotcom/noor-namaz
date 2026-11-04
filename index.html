@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#ecfdf5">
+<meta name="theme-color" content="#fbf6ee">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -15,8 +15,8 @@
 <title>নূর - সালাফি নামাজের সময়সূচি</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg1:#ecfdf5;--bg2:#e0f2fe;--tx:#0f172a;--mu:#5b6b7f;--gr:#047857;--am:#b45309;--card:rgba(255,255,255,.88);--bd:rgba(4,120,87,.16);--inp:#f8fafc;--btn:rgba(4,120,87,.10);--btnbd:rgba(4,120,87,.35);--bellon:rgba(245,158,11,.22);--cur:#d1fae5;--curbd:#10b981;--dp:#334155;--ring:#047857;--sh:0 2px 10px rgba(15,118,110,.10)}
-:root[data-theme=dark]{--bg1:#0b1320;--bg2:#0f2a26;--tx:#f1f5f9;--mu:#94a3b8;--gr:#34d399;--am:#fbbf24;--card:rgba(255,255,255,.06);--bd:rgba(255,255,255,.12);--inp:rgba(0,0,0,.25);--btn:rgba(52,211,153,.2);--btnbd:rgba(52,211,153,.5);--bellon:rgba(251,191,36,.18);--cur:rgba(16,185,129,.22);--curbd:rgba(52,211,153,.5);--dp:#cbd5e1;--ring:#065f46;--sh:none;color-scheme:dark}
+:root{--bg1:#fbf6ee;--bg2:#f3e8d8;--tx:#3b2a1a;--mu:#8a7560;--gr:#8b5e34;--am:#b8742a;--card:rgba(255,255,255,.86);--bd:rgba(139,94,52,.18);--inp:#fffaf3;--btn:rgba(139,94,52,.10);--btnbd:rgba(139,94,52,.35);--bellon:rgba(184,116,42,.22);--cur:#f3e2c8;--curbd:#c8975f;--dp:#5a4632;--ring:#8b5e34;--sh:0 2px 10px rgba(120,80,40,.12);--h1:#cfa77b;--h2:#a97b4f;--navbg:#fffaf3}
+:root[data-theme=dark]{--bg1:#1b1410;--bg2:#2a1f17;--tx:#f5ebdd;--mu:#bba58d;--gr:#e0b684;--am:#f0c27a;--card:rgba(255,255,255,.06);--bd:rgba(255,255,255,.12);--inp:rgba(0,0,0,.25);--btn:rgba(224,182,132,.18);--btnbd:rgba(224,182,132,.5);--bellon:rgba(240,194,122,.2);--cur:rgba(224,182,132,.2);--curbd:rgba(224,182,132,.55);--dp:#e6d6c0;--ring:#7a4f28;--sh:0 2px 10px rgba(0,0,0,.3);--h1:#7a5733;--h2:#4f3720;--navbg:#241a13}
 *{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{font-family:'Hind Siliguri','Noto Sans Bengali','Kohinoor Bangla',system-ui,sans-serif;font-size:14px;background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;color:var(--tx);min-height:100vh;min-height:100dvh;padding:10px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;transition:background .3s,color .3s}
@@ -30,9 +30,9 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .row{display:flex;gap:6px;margin-top:10px}
 input{flex:1;min-width:0;font:inherit;font-size:13px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd);background:var(--inp);color:var(--tx)}
 .btn{padding:8px 11px;border-radius:10px;background:var(--btn);border:1px solid var(--btnbd);font-size:13px;white-space:nowrap}
-#th{position:absolute;top:8px;right:8px;width:34px;height:34px;padding:0;border-radius:50%;font-size:17px;line-height:1;background:var(--btn);border:1px solid var(--btnbd);display:flex;align-items:center;justify-content:center}
-#cd{font:700 clamp(28px,9.5vw,36px) ui-monospace,Menlo,monospace;color:var(--am);margin:4px 0;letter-spacing:1px}
-#nn{font-size:clamp(22px,7vw,26px);font-weight:700;color:var(--gr)}
+#th{width:36px;height:36px;padding:0;border-radius:50%;font-size:17px;line-height:1;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex:none}
+#cd{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+#nn{font-weight:700}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .se{display:flex;flex-direction:column;align-items:center;gap:2px}
 .se b{font-size:17px}
@@ -52,32 +52,42 @@ details summary{cursor:pointer;font-weight:600;color:var(--gr);font-size:14px}
 #ring{position:fixed;left:10px;right:10px;top:calc(10px + env(safe-area-inset-top,0px));max-width:420px;margin:auto;z-index:9;background:var(--ring);color:#fff;border:1px solid var(--gr);border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 8px 30px #0008;font-size:14px}
 #ring .btn{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.15)}
 #ring[hidden]{display:none}
-#st{font-size:12px;color:var(--am);margin-top:5px}
+#st{font-size:12px;margin-top:8px;position:relative;z-index:1}#ss{font-size:12px;color:var(--am);margin-top:6px}
+.hd{position:relative;overflow:hidden;border-radius:22px;padding:14px 16px 16px;color:#fff;background:linear-gradient(135deg,var(--h1),var(--h2));box-shadow:var(--sh)}
+.hd-top{display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative;z-index:1}
+.pill{background:rgba(255,255,255,.22);padding:7px 14px;border-radius:999px;font-size:14px;max-width:calc(100% - 46px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0}
+.hd-main{position:relative;z-index:1;margin-top:18px}
+.cn{font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px}
+.ct{font-size:clamp(42px,14vw,54px);font-weight:700;line-height:1.15;margin-top:4px}
+.ct small{font-size:18px;font-weight:500;margin-left:6px;opacity:.9}
+.nx{margin-top:8px;font-size:14px;opacity:.97}
+.hd-dt{position:relative;z-index:1;margin-top:12px;font-size:12px;opacity:.92;display:flex;flex-wrap:wrap;gap:2px 10px}
+.ms{position:absolute;right:-8px;bottom:-6px;width:170px;height:150px;opacity:.2;z-index:0;pointer-events:none}
+.pg{display:grid;gap:10px;align-content:start}
+.pg[hidden]{display:none}
+.wrap{padding-bottom:78px}
+#nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:440px;z-index:8;display:flex;background:var(--navbg);border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(80,50,20,.14);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+#nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:12px;color:var(--mu)}
+#nav button.on{color:var(--gr);font-weight:600}
+#pg-set h1{padding:0}
 </style>
 </head>
 <body>
 <div id="ring" hidden role="alert"><span id="rt"></span><button class="btn" id="rs">বন্ধ করুন</button></div>
 <main class="wrap">
-  <section class="card c">
-    <button id="th" type="button" aria-label="ডার্ক মোড চালু করুন" title="ডার্ক/লাইট মোড">🌙</button>
-    <h1>🕌 সহিহ সালাফি সময়সূচি</h1>
-    <p class="mu" id="loc">📍 অবস্থান নিশ্চিত করা হচ্ছে...</p>
-    <p class="mu" id="dt">--</p>
-    <p class="mu" id="hj"></p>
+<section class="pg" id="pg-home">
+  <header class="hd">
+    <div class="hd-top"><p class="pill" id="loc">📍 অবস্থান নিশ্চিত করা হচ্ছে...</p><button id="th" type="button" aria-label="ডার্ক মোড চালু করুন" title="ডার্ক/লাইট মোড">🌙</button></div>
+    <div class="hd-main">
+      <div class="cn"><span id="cn">--</span><span id="ci" aria-hidden="true">☀️</span></div>
+      <div class="ct" id="ct">--:--</div>
+      <p class="nx">পরবর্তী সালাত: <b id="nn">--</b> <span id="nt"></span></p>
+      <p class="nx">বাকি সময়: <b id="cd">00:00:00</b></p>
+    </div>
+    <div class="hd-dt"><span id="dt">--</span><span id="hj"></span></div>
     <p id="st"></p>
-    <form class="row" id="sf">
-      <input id="q" placeholder="জেলা/শহর লিখুন (Joypurhat, Dhaka)" aria-label="শহরের নাম" list="dl" autocomplete="off"><datalist id="dl"></datalist>
-      <button class="btn" type="submit">খুঁজুন</button>
-      <button class="btn" type="button" id="gps" title="জিপিএস লোকেশন" aria-label="জিপিএস">📍</button>
-    </form>
-  </section>
-
-  <section class="card c">
-    <span class="mu">পরবর্তী সালাত</span>
-    <h2 id="nn">--</h2>
-    <div id="cd">00:00:00</div>
-    <p class="mu" id="nt"></p>
-  </section>
+    <svg class="ms" viewBox="0 0 170 150" aria-hidden="true"><g fill="#fff"><rect x="10" y="46" width="14" height="104"/><path d="M8 46h18l-9-16z"/><rect x="15" y="12" width="4" height="18"/><circle cx="17" cy="10" r="3.5"/><rect x="40" y="98" width="122" height="52"/><path d="M52 98c0-34 26-54 48-54s48 20 48 54z"/><rect x="98" y="22" width="4" height="22"/><circle cx="100" cy="19" r="4.5"/><rect x="146" y="62" width="16" height="88"/><path d="M144 62h20l-10-17z"/></g></svg>
+  </header>
 
   <section class="g2">
     <div class="card c se"><span class="mu">সেহরির শেষ সময়</span><b id="sh">--:--</b><button class="bell" data-k="Sehri" aria-label="সেহরি অ্যালার্ম">🔔</button></div>
@@ -88,9 +98,11 @@ details summary{cursor:pointer;font-weight:600;color:var(--gr);font-size:14px}
     <div class="mu" style="margin:0 0 8px;display:flex;justify-content:space-between"><span>আজকের সালাতের সময়</span><span>অ্যালার্ম</span></div>
     <div id="list"></div>
   </section>
+</section>
 
+<section class="pg" id="pg-dua" hidden>
   <section class="card">
-    <details>
+    <details open>
       <summary>সালামের পরের সহিহ মাসনূন দুআ ও যিকির</summary>
 <div class="d"><h4>১. আল্লাহু আকবার (১ বার)</h4><p class="ar">اللهُ أَكْبَرُ</p><p>আল্লা-হু আকবার।</p><p>অর্থ: আল্লাহ সবার চেয়ে বড়।</p><p class="src">বুখারী হা/৮৪২</p></div>
       <div class="d"><h4>২. ইস্তিগফার (৩ বার)</h4><p class="ar">أَسْتَغْفِرُ اللهَ</p><p>আস্তাগফিরুল্লা-হ।</p><p>অর্থ: আমি আল্লাহর নিকটে ক্ষমা প্রার্থনা করছি।</p><p class="src">মুসলিম হা/৫৯১</p></div>
@@ -114,8 +126,29 @@ details summary{cursor:pointer;font-weight:600;color:var(--gr);font-size:14px}
       <div class="d"><p class="src">সূত্র: হাদীছ ফাউণ্ডেশন বাংলাদেশ, রাজশাহী</p></div>
     </details>
   </section>
+</section>
 
+<section class="pg" id="pg-set" hidden>
+  <section class="card">
+    <h1>🕌 সহিহ সালাফি সময়সূচি</h1>
+    <p class="mu">অবস্থান বদলাতে জেলা/শহরের নাম লিখুন অথবা জিপিএস চাপুন।</p>
+    <form class="row" id="sf">
+      <input id="q" placeholder="জেলা/শহর লিখুন (Joypurhat, Dhaka)" aria-label="শহরের নাম" list="dl" autocomplete="off"><datalist id="dl"></datalist>
+      <button class="btn" type="submit">খুঁজুন</button>
+      <button class="btn" type="button" id="gps" title="জিপিএস লোকেশন" aria-label="জিপিএস">📍</button>
+    </form>
+    <p id="ss"></p>
+  </section>
+  <section class="card">
+    <p class="mu">হিসাব পদ্ধতি: উম্মুল কুরা (ফজর ১৮.৫°)। সময় ফোনেই হিসাব হয়, তাই অফলাইনেও চলে।</p>
+  </section>
+</section>
 </main>
+<nav id="nav" aria-label="নেভিগেশন">
+  <button type="button" class="on" data-pg="home"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5c-3 0-5.5 2.4-5.5 5.5v3H4v10.5h16V11h-2.5V8c0-3.100-2.5-5.500-5.500-5.500zM10 20.500v-3.500a2 2 0 014 0v3.500z"/></svg><span>হোম</span></button>
+  <button type="button" data-pg="dua"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M3 4.500h6.500c1.400 0 2.500 1.100 2.500 2.500v13.500c0-1.100-.9-2-2-2H3zM21 4.500h-6.500C13.100 4.500 12 5.600 12 7v13.500c0-1.100.9-2 2-2h7z"/></svg><span>দুআ</span></button>
+  <button type="button" data-pg="set"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2l8.500 5v10L12 22l-8.500-5V7zM12 9a3 3 0 100 6 3 3 0 000-6z"/></svg><span>সেটিংস</span></button>
+</nav>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -124,6 +157,7 @@ const bn=s=>String(s).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
 const p2=n=>String(n).padStart(2,'0');
 const NM={Fajr:'ফজর',Sunrise:'সূর্যোদয়',Dhuhr:'যোহর',Asr:'আসর',Maghrib:'মাগরিব',Isha:'এশা',Sehri:'সেহরির শেষ সময়',Iftar:'ইফতারের সময়'};
 const PR=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+const IC={Fajr:'🌄',Sunrise:'🌅',Dhuhr:'☀️',Asr:'🌤️',Maghrib:'🌇',Isha:'🌙'};
 const HM=['মুহাররম','সফর','রবিউল আউয়াল','রবিউস সানী','জুমাদাল উলা','জুমাদাস সানিয়াহ','রজব','শা‘বান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
 const DHAKA={lat:23.8103,lng:90.4125,name:'ঢাকা (ডিফল্ট)'};
 const DIST='Dhaka 23.81 90.41,Gazipur 24.00 90.42,Narayanganj 23.62 90.50,Narsingdi 23.92 90.72,Manikganj 23.86 90.00,Munshiganj 23.55 90.53,Tangail 24.25 89.92,Kishoreganj 24.43 90.78,Faridpur 23.60 89.84,Gopalganj 23.01 89.83,Madaripur 23.17 90.20,Rajbari 23.76 89.64,Shariatpur 23.22 90.35,Chattogram 22.36 91.78,Cox’s Bazar 21.43 92.01,Cumilla 23.46 91.18,Feni 23.02 91.40,Brahmanbaria 23.96 91.11,Noakhali 22.87 91.10,Chandpur 23.23 90.65,Lakshmipur 22.94 90.84,Khagrachhari 23.12 91.98,Rangamati 22.65 92.17,Bandarban 22.20 92.22,Rajshahi 24.37 88.60,Bogura 24.85 89.37,Joypurhat 25.10 89.02,Naogaon 24.80 88.94,Natore 24.42 89.00,Chapainawabganj 24.60 88.28,Pabna 24.00 89.23,Sirajganj 24.45 89.70,Khulna 22.82 89.55,Bagerhat 22.65 89.79,Satkhira 22.71 89.07,Jashore 23.17 89.21,Narail 23.17 89.50,Magura 23.49 89.42,Jhenaidah 23.54 89.17,Kushtia 23.90 89.12,Chuadanga 23.64 88.85,Meherpur 23.76 88.63,Barishal 22.70 90.37,Bhola 22.69 90.65,Patuakhali 22.36 90.33,Pirojpur 22.58 89.97,Jhalokati 22.64 90.20,Barguna 22.15 90.12,Sylhet 24.90 91.87,Moulvibazar 24.48 91.77,Habiganj 24.38 91.42,Sunamganj 25.07 91.40,Rangpur 25.75 89.25,Dinajpur 25.63 88.64,Thakurgaon 26.03 88.46,Panchagarh 26.33 88.55,Nilphamari 25.93 88.86,Lalmonirhat 25.99 89.45,Kurigram 25.81 89.64,Gaibandha 25.33 89.53,Mymensingh 24.75 90.40,Jamalpur 24.92 89.94,Sherpur 25.02 90.02,Netrokona 24.87 90.73,Comilla 23.46 91.18,Chittagong 22.36 91.78,Jessore 23.17 89.21,Barisal 22.70 90.37,Bogra 24.85 89.37'.split(',').map(x=>{const p=x.split(' ');return [p.slice(0,-2).join(' '),+p[p.length-2],+p[p.length-1]]});
@@ -212,7 +246,9 @@ function tick(){
   for(const p of ['Fajr','Dhuhr','Asr','Maghrib','Isha']){const d=at(now,T[p]);if(d>now){next={p,d};break}}
   if(!next){const tm=new Date(now);tm.setDate(tm.getDate()+1);const t=getDay(tm).t.Fajr;next={p:'Fajr',d:at(tm,t),t}}
   document.querySelectorAll('.p').forEach(el=>el.classList.toggle('cur',el.dataset.p===cur));
-  $('nn').textContent=NM[next.p]; $('nt').textContent='সময়: '+f12(next.t||T[next.p]);
+  const ft=f12(T[cur]),ix=ft.lastIndexOf(' ');
+  $('cn').textContent=NM[cur]; $('ci').textContent=IC[cur]; $('ct').innerHTML=ft.slice(0,ix)+'<small>'+ft.slice(ix+1)+'</small>';
+  $('nn').textContent=NM[next.p]; $('nt').textContent='('+f12(next.t||T[next.p])+')';
   const s=Math.max(0,Math.floor((next.d-now)/1000));
   $('cd').textContent=bn(`${p2(Math.floor(s/3600))}:${p2(Math.floor(s%3600/60))}:${p2(s%60)}`);
   [['Fajr','Fajr'],['Dhuhr','Dhuhr'],['Asr','Asr'],['Maghrib','Maghrib'],['Isha','Isha'],['Sehri','Fajr'],['Iftar','Maghrib']].forEach(([a,src])=>{
@@ -243,31 +279,35 @@ function gps(){
     p=>setLoc({lat:p.coords.latitude,lng:p.coords.longitude,name:null},true,true),
     ()=>setLoc(loc&&loc.name?loc:DHAKA,false,false),{timeout:10000,maximumAge:600000});
 }
-$('gps').onclick=gps;
+$('gps').onclick=()=>{gps();showPg('home')};
 $('sf').onsubmit=async e=>{
-  e.preventDefault(); const q=$('q').value.trim(); if(!q) return;
+  e.preventDefault(); $('ss').textContent=''; const q=$('q').value.trim(); if(!q) return;
   const nk=x=>x.toLowerCase().replace(/[^a-z]/g,''),hit=DIST.find(x=>nk(x[0])===nk(q));
-  if(hit){$('q').value='';setLoc({lat:hit[1],lng:hit[2],name:hit[0]},true,false);return}
-  if(!navigator.onLine){$('st').textContent='শহর খুঁজতে ইন্টারনেট দরকার।';return}
+  if(hit){$('q').value='';setLoc({lat:hit[1],lng:hit[2],name:hit[0]},true,false);showPg('home');return}
+  if(!navigator.onLine){$('ss').textContent='শহর খুঁজতে ইন্টারনেট দরকার।';return}
   try{
     const r=await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=bn&q=${encodeURIComponent(q)}`);
     const j=await r.json();
-    if(!j.length){$('st').textContent='শহর পাওয়া যায়নি। ইংরেজিতে নাম লিখে আবার চেষ্টা করুন।';return}
+    if(!j.length){$('ss').textContent='শহর পাওয়া যায়নি। ইংরেজিতে নাম লিখে আবার চেষ্টা করুন।';return}
     $('q').value='';
-    setLoc({lat:+j[0].lat,lng:+j[0].lon,name:j[0].display_name.split(',')[0]},true,false);
-  }catch{$('st').textContent='সার্চ করতে ব্যর্থ। ইন্টারনেট সংযোগ দেখুন।'}
+    setLoc({lat:+j[0].lat,lng:+j[0].lon,name:j[0].display_name.split(',')[0]},true,false);showPg('home');
+  }catch{$('ss').textContent='সার্চ করতে ব্যর্থ। ইন্টারনেট সংযোগ দেখুন।'}
 };
 addEventListener('online',()=>{if(loc)loadAll()});
 addEventListener('offline',render);
 
 (function(){const l=LS.g('loc',null);if(l)setLoc(l,false,false);else gps()})();
 
+/* নিচের মেনু */
+function showPg(n){document.querySelectorAll('.pg').forEach(e=>e.hidden=e.id!=='pg-'+n);document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.pg===n));scrollTo(0,0)}
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>showPg(b.dataset.pg));
+
 /* ডার্ক / লাইট মোড */
 function applyTheme(t,save){
   document.documentElement.setAttribute('data-theme',t);
   $('th').textContent=t==='dark'?'☀️':'🌙';
   $('th').setAttribute('aria-label',t==='dark'?'লাইট মোড চালু করুন':'ডার্ক মোড চালু করুন');
-  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=t==='dark'?'#0b1320':'#ecfdf5';
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content=t==='dark'?'#1b1410':'#fbf6ee';
   if(save) LS.s('theme',t);
 }
 applyTheme(document.documentElement.getAttribute('data-theme')||'light',false);
