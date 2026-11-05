@@ -261,14 +261,14 @@ setInterval(tick,1000);
 
 async function setLoc(l,save,resolve){
   loc=l; if(save) LS.s('loc',l);
-  $('loc').textContent='📍 '+(l.name||'আপনার এলাকা');
+  $('loc').textContent=' '+(l.name||'আপনার এলাকা');
   await loadAll();
   if(resolve&&navigator.onLine){
     try{
       const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&accept-language=bn&lat=${l.lat}&lon=${l.lng}`);
       const j=await r.json(),a=j.address||{};
       l.name=a.city||a.town||a.city_district||a.suburb||a.state_district||a.state||'আপনার এলাকা';
-      LS.s('loc',l); $('loc').textContent='📍 '+l.name;
+      LS.s('loc',l); $('loc').textContent=' '+l.name;
     }catch{}
   }
 }
