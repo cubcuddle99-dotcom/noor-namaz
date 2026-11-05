@@ -1,12 +1,16 @@
-// নূর অ্যাপের অফলাইন ক্যাশ। অ্যাপে বড় পরিবর্তন করলে নিচের ভার্সন সংখ্যা বাড়িয়ে দিন (v4 -> v5)।
-const CACHE = 'noor-v4';
+// নূর অ্যাপের অফলাইন ক্যাশ।
+// index.html বদলালে ভার্সন বাড়ানো লাগবে না (পেজ আগে নেটওয়ার্ক থেকে আসে এবং প্রতিবার ক্যাশ নতুন হয়)।
+// শুধু আইকন, manifest বা adhan.mp3 বদলালে নিচের ভার্সন সংখ্যা বাড়ান (v5 -> v6)।
+const CACHE = 'noor-v5';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const OPTIONAL = ['./adhan.mp3']; // ফাইল না থাকলেও ইনস্টল আটকাবে না
 
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => c.addAll(CORE).then(() => Promise.all(OPTIONAL.map(u => c.add(u).catch(() => {})))))
+      // cache:'reload' = ব্রাউজারের পুরোনো কপি এড়িয়ে সরাসরি সার্ভার থেকে নতুন ফাইল আনে
+      .then(c => c.addAll(CORE.map(u => new Request(u, { cache: 'reload' })))
+        .then(() => Promise.all(OPTIONAL.map(u => c.add(u).catch(() => {})))))
       .then(() => self.skipWaiting())
   );
 });
@@ -62,11 +66,19 @@ self.addEventListener('fetch', e => {
 
   // পেজ: আগে নেটওয়ার্ক (নতুন ভার্সন পেতে), না পেলে ক্যাশ
   if (req.mode === 'navigate') {
-    e.respondWith(
-      fetch(req)
-        .then(res => { caches.open(CACHE).then(c => c.put('./index.html', res.clone())); return res; })
-        .catch(() => caches.match('./index.html'))
-    );
+    e.respondWith((async () => {
+      try {
+        const res = await fetch(req);
+        if (res && res.ok && !res.redirected) {
+          // গুরুত্বপূর্ণ: রেসপন্স ব্রাউজারকে দেওয়ার আগেই ক্লোন করতে হয়, নইলে ক্যাশ আপডেট নীরবে ব্যর্থ হয়
+          const copy = res.clone();
+          e.waitUntil(caches.open(CACHE).then(c => c.put('./index.html', copy)).catch(() => {}));
+        }
+        return res;
+      } catch (err) {
+        return (await caches.match('./index.html')) || (await caches.match('./')) || Response.error();
+      }
+    })());
     return;
   }
 
