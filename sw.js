@@ -1,7 +1,7 @@
 // নূর অ্যাপের অফলাইন ক্যাশ।
 // index.html বদলালে ভার্সন বাড়ানো লাগবে না (পেজ আগে নেটওয়ার্ক থেকে আসে এবং প্রতিবার ক্যাশ নতুন হয়)।
-// শুধু আইকন, manifest বা adhan.mp3 বদলালে নিচের ভার্সন সংখ্যা বাড়ান (v5 -> v6)।
-const CACHE = 'noor-v5';
+// শুধু আইকন, manifest বা adhan.mp3 বদলালে নিচের ভার্সন সংখ্যা বাড়ান (v6 -> v7)।
+const CACHE = 'noor-v6';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 const OPTIONAL = ['./adhan.mp3']; // ফাইল না থাকলেও ইনস্টল আটকাবে না
 
@@ -68,7 +68,7 @@ self.addEventListener('fetch', e => {
   if (req.mode === 'navigate') {
     e.respondWith((async () => {
       try {
-        const res = await fetch(req);
+        const res = await fetch(req, { cache: 'no-cache' }); // হোস্টের/ব্রাউজারের পুরোনো কপি এড়িয়ে সবসময় সার্ভারকে জিজ্ঞেস করে
         if (res && res.ok && !res.redirected) {
           // গুরুত্বপূর্ণ: রেসপন্স ব্রাউজারকে দেওয়ার আগেই ক্লোন করতে হয়, নইলে ক্যাশ আপডেট নীরবে ব্যর্থ হয়
           const copy = res.clone();
