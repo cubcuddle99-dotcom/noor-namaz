@@ -77,10 +77,21 @@ details summary{cursor:pointer;font-weight:600;color:var(--gr);font-size:17px}
 .dback{justify-self:start;padding:7px 12px}
 .tg{display:flex;gap:6px}.tg button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--btnbd);background:var(--btn);font-weight:600}.tg button.on{background:var(--bellon);color:var(--gr);border-color:var(--curbd)}
 .d p.fz{font-size:15px;color:var(--am)!important}
+
+/* বিশেষ দিনের শুভেচ্ছা */
+#gr{position:fixed;inset:0;z-index:8;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+#gr[hidden]{display:none}
+#gr .grb{background:var(--bg1);color:var(--tx);border:1px solid var(--bd);border-radius:20px;padding:26px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 12px 40px #0008}
+#gr .gri{font-size:48px;line-height:1.2}
+#gr h2{margin:8px 0;color:var(--gr);font-size:22px}
+#gr .grm{line-height:1.7;margin:8px 0}
+#gr .gra{font-size:24px;line-height:2;margin:6px 0 0;color:var(--gr)}
+#gr .grt{margin:0 0 12px;color:var(--mu);font-size:14px}
 </style>
 </head>
 <body>
 <div id="ring" hidden role="alert"><span id="rt"></span><button class="btn" id="rs">বন্ধ করুন</button></div>
+<div id="gr" hidden role="dialog" aria-modal="true" aria-labelledby="grt"><div class="grb"><div class="gri" id="gri"></div><h2 id="grt"></h2><p class="grm" id="grm"></p><p class="gra" id="gra" lang="ar" dir="rtl"></p><p class="grt" id="grtr"></p><button class="btn" id="grx" type="button">বন্ধ করুন</button></div></div>
 <main class="wrap">
 <section class="pg" id="pg-home">
   <header class="hd">
@@ -160,6 +171,7 @@ details summary{cursor:pointer;font-weight:600;color:var(--gr);font-size:17px}
   </section>
   <section class="card">
     <p class="mu">হিসাব পদ্ধতি: উম্মুল কুরা (ফজর ১৮.৫°)। সময় ফোনেই হিসাব হয়, তাই অফলাইনেও চলে।</p>
+    <p class="mu" id="ver">অ্যাপ সংস্করণ: ৩</p>
   </section>
 </section>
 </main>
@@ -225,26 +237,10 @@ document.addEventListener('click',e=>{
   const k=b.dataset.k; alarms[k]=!alarms[k]; LS.s('alarms',alarms); paintBells();
   if(alarms[k]){
     try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume()}catch{}
-    unlockAdhan();
+    previewAlarm(k);
     if('Notification' in window&&Notification.permission==='default') Notification.requestPermission();
-  }
-  phoneAlarm(k,!!alarms[k]);
+  } else stopPreview();
 });
-
-/* অ্যান্ড্রয়েডে ফোনের নিজস্ব ঘড়ি (Clock) অ্যাপে অ্যালার্ম সেট/বন্ধ করা */
-const IS_ANDROID=/Android/i.test(navigator.userAgent);
-const ALARM_SRC={Fajr:'Fajr',Dhuhr:'Dhuhr',Asr:'Asr',Maghrib:'Maghrib',Isha:'Isha',Sehri:'Fajr',Iftar:'Maghrib'};
-function phoneAlarm(k,on){
-  if(!IS_ANDROID||!T||!ALARM_SRC[k]) return;
-  const src=ALARM_SRC[k],now=new Date();
-  let t=T[src];
-  if(at(now,t)<=now){const tm=new Date(now);tm.setDate(tm.getDate()+1);t=getDay(tm).t[src]} // আজকের সময় পার হলে আগামীকালের সময়
-  const[h,m]=t.split(':'),lbl=encodeURIComponent('নূর - '+NM[k]);
-  const url=on
-    ?`intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR=${+h};i.android.intent.extra.alarm.MINUTES=${+m};S.android.intent.extra.alarm.MESSAGE=${lbl};end`
-    :`intent:#Intent;action=android.intent.action.DISMISS_ALARM;S.android.intent.extra.alarm.SEARCH_MODE=android.label;S.android.intent.extra.alarm.MESSAGE=${lbl};end`;
-  try{location.href=url}catch{}
-}
 
 function beep(){
   if(!actx) return;
@@ -253,10 +249,29 @@ function beep(){
 }
 const adhan=new Audio('adhan.mp3');adhan.preload='auto';
 const ADHAN_FOR=['Fajr','Dhuhr','Asr','Maghrib','Isha'];
+const PREVIEW_SEC=6; // অ্যালার্ম সেট করলে আযান কত সেকেন্ড বাজবে (বদলাতে চাইলে এই সংখ্যা বদলান)
+let prevT=null,prevF=null,previewing=false;
+function stopPreview(){
+  clearTimeout(prevT);clearInterval(prevF);prevT=prevF=null;
+  if(previewing){previewing=false;try{adhan.pause();adhan.currentTime=0}catch{}}
+  try{adhan.volume=1}catch{}
+}
+/* অ্যালার্ম চালু করলে আযানের শুরুর অংশ একবার বাজে (শেষে আস্তে আস্তে মিলিয়ে যায়), যাতে বোঝা যায় অ্যালার্ম সেট হয়েছে */
+function previewAlarm(k){
+  stopPreview();
+  if(!$('ring').hidden) return; // আসল অ্যালার্ম বাজছে
+  if(ADHAN_FOR.includes(k)){
+    previewing=true; adhan.onended=null; adhan.currentTime=0;
+    const pr=adhan.play();
+    if(pr&&pr.catch) pr.catch(()=>{previewing=false;beep()});
+    prevT=setTimeout(()=>{let v=1;prevF=setInterval(()=>{v-=.1;if(v<=0)stopPreview();else{try{adhan.volume=v}catch{}}},100)},PREVIEW_SEC*1000);
+  } else beep(); // সেহরি/ইফতারে বিপ শব্দ বাজে
+}
 function unlockAdhan(){adhan.muted=true;const p=adhan.play();if(p&&p.then)p.then(()=>{adhan.pause();adhan.currentTime=0;adhan.muted=false}).catch(()=>{adhan.muted=false})}
 function stopRing(){clearInterval(ringTimer);ringTimer=null;$('ring').hidden=true;try{adhan.pause();adhan.currentTime=0}catch{}}
 $('rs').onclick=stopRing;
 function ring(k){
+  stopPreview();
   const msg=k==='Sehri'||k==='Iftar'?`${NM[k]} হয়েছে`:`${NM[k]}ের সময় হয়েছে`;
   $('rt').textContent='🔔 '+msg; $('ring').hidden=false;
   clearInterval(ringTimer); let n=0; navigator.vibrate&&navigator.vibrate([300,150,300]);
@@ -274,7 +289,7 @@ function ring(k){
 function tick(){
   const now=new Date(),k=dkey(now);
   if(!loc) return;
-  if(k!==curKey){curKey=k;render()}
+  if(k!==curKey){curKey=k;render();checkGreet()}
   if(!T) return;
   let cur='Isha',next=null;
   PR.forEach(p=>{if(at(now,T[p])<=now)cur=p});
@@ -377,6 +392,30 @@ function applyTheme(t,save){
 }
 applyTheme(document.documentElement.getAttribute('data-theme')||'light',false);
 $('th').onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark',true);
+
+/* বিশেষ দিনের শুভেচ্ছা: রমজান শুরু, ঈদুল ফিতর, ঈদুল আযহা (হিজরি তারিখ অনুযায়ী) */
+const HIJRI_ADJ=0; // বাংলাদেশে চাঁদ দেখা সৌদির চেয়ে একদিন পরে হলে -1 করুন
+function hijriParts(d){try{const x=new Date(d);x.setDate(x.getDate()+HIJRI_ADJ);const q=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(x),g=t=>parseInt(q.find(z=>z.type===t).value,10);return{d:g('day'),m:g('month'),y:g('year')}}catch{return null}}
+const GREET=[
+ {id:'ramadan',m:9,d:1,ic:'🌙',t:'রমজান মুবারাক!',msg:'রমজানুল মুবারকের শুভ সূচনা। আল্লাহ আমাদের সবার সিয়াম, কিয়াম ও নেক আমল কবুল করুন।',ar:'',tr:'সেহরি ও ইফতারের অ্যালার্ম চালু করতে ভুলবেন না।'},
+ {id:'fitr',m:10,d:1,ic:'🌟',t:'ঈদুল ফিতরের শুভেচ্ছা!',msg:'ঈদ মুবারাক! আল্লাহ আমাদের সিয়াম ও কিয়াম কবুল করুন এবং আপনার ও আপনার পরিবারের জীবনে সুখ-শান্তি দান করুন।',ar:'تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمْ',tr:'তাকাব্বালাল্লাহু মিন্না ওয়া মিনকুম'},
+ {id:'adha',m:12,d:10,ic:'🕋',t:'ঈদুল আযহার শুভেচ্ছা!',msg:'ঈদ মুবারাক! আল্লাহ আমাদের কুরবানী ও নেক আমল কবুল করুন এবং আপনার ও আপনার পরিবারের জীবনে সুখ-শান্তি দান করুন।',ar:'تَقَبَّلَ اللَّهُ مِنَّا وَمِنْكُمْ',tr:'তাকাব্বালাল্লাহু মিন্না ওয়া মিনকুম'}
+];
+function showGreet(g){
+  $('gri').textContent=g.ic; $('grt').textContent=g.t; $('grm').textContent=g.msg;
+  $('gra').textContent=g.ar; $('gra').hidden=!g.ar; $('grtr').textContent=g.tr; $('gr').hidden=false;
+}
+function checkGreet(){
+  const h=hijriParts(new Date()); if(!h) return;
+  const g=GREET.find(x=>x.m===h.m&&x.d===h.d); if(!g) return;
+  const key=g.id+'-'+h.y, seen=LS.g('greet',{}); if(seen[key]) return;
+  seen[key]=1; LS.s('greet',seen); showGreet(g);
+}
+$('grx').onclick=()=>{$('gr').hidden=true};
+$('gr').onclick=e=>{if(e.target===$('gr'))$('gr').hidden=true};
+addEventListener('keydown',e=>{if(e.key==='Escape')$('gr').hidden=true});
+/* পরীক্ষা করতে ঠিকানার শেষে ?greet=ramadan বা ?greet=fitr বা ?greet=adha যোগ করুন */
+(function(){const q=new URLSearchParams(location.search).get('greet'),g=GREET.find(x=>x.id===q);if(g)showGreet(g)})();
 /* অফলাইন সাপোর্ট: সার্ভিস ওয়ার্কার */
 if('serviceWorker' in navigator){
   addEventListener('load',()=>{
