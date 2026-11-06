@@ -228,7 +228,23 @@ document.addEventListener('click',e=>{
     unlockAdhan();
     if('Notification' in window&&Notification.permission==='default') Notification.requestPermission();
   }
+  phoneAlarm(k,!!alarms[k]);
 });
+
+/* অ্যান্ড্রয়েডে ফোনের নিজস্ব ঘড়ি (Clock) অ্যাপে অ্যালার্ম সেট/বন্ধ করা */
+const IS_ANDROID=/Android/i.test(navigator.userAgent);
+const ALARM_SRC={Fajr:'Fajr',Dhuhr:'Dhuhr',Asr:'Asr',Maghrib:'Maghrib',Isha:'Isha',Sehri:'Fajr',Iftar:'Maghrib'};
+function phoneAlarm(k,on){
+  if(!IS_ANDROID||!T||!ALARM_SRC[k]) return;
+  const src=ALARM_SRC[k],now=new Date();
+  let t=T[src];
+  if(at(now,t)<=now){const tm=new Date(now);tm.setDate(tm.getDate()+1);t=getDay(tm).t[src]} // আজকের সময় পার হলে আগামীকালের সময়
+  const[h,m]=t.split(':'),lbl=encodeURIComponent('নূর - '+NM[k]);
+  const url=on
+    ?`intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR=${+h};i.android.intent.extra.alarm.MINUTES=${+m};S.android.intent.extra.alarm.MESSAGE=${lbl};end`
+    :`intent:#Intent;action=android.intent.action.DISMISS_ALARM;S.android.intent.extra.alarm.SEARCH_MODE=android.label;S.android.intent.extra.alarm.MESSAGE=${lbl};end`;
+  try{location.href=url}catch{}
+}
 
 function beep(){
   if(!actx) return;
